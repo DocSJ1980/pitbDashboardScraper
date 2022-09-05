@@ -3,6 +3,9 @@
 const puppeteer = require('puppeteer-extra')
 const fs = require('fs/promises')
 const writeFileSync = require("fs").writeFileSync;
+const { tableParser } = require('puppeteer-table-parser');
+const axios = require('axios')
+const cheerio = require('cheerio')
 
 // add recaptcha plugin and provide it your 2captcha token (= their apiKey)
 // 2captcha is the builtin solution provider but others would work as well.
@@ -75,14 +78,57 @@ puppeteer.launch({
             page.waitForNavigation(),
             page.click('body > div.app-admin-wrap.layout-horizontal-bar.clearfix > div > div.row.p-custom > div:nth-child(5) > button'),
         ])
-        const data = await page.$$eval("tbody > tr", rows => {
-            return Array.from(rows, row => {
-                const columns = row.querySelectorAll('td')
-                return Array.from(columns, column => column.innerText)
+        const pageData = await page.evaluate(() => {
+            return { html: document.documentElement.innerHTML }
+        })
+
+        const $ = cheerio.load(pageData.html)
+        const table = $('#p_table')
+        const rowSelector = "#p_table > tbody > tr"
+
+        const keys = [
+            'sr',
+            'id',
+            'district',
+            'town',
+            'uc',
+            'tag',
+            'larva',
+            'dengueLarva',
+            'lat',
+            'long',
+            'pics',
+            'timeDiff',
+            'user',
+            'activityTime',
+            'bogus'
+        ]
+
+        $(rowSelector).each((parentIdx, parentElm) => {
+            let keyIdx = 0
+            const activity = {}
+            const picsBoth = []
+            $(parentElm).children().each((childIdx, childElm) => {
+                let tdValue = $(childElm).text()
+
+                if (keyIdx === 10) {
+                    const beforePic = $('a:first-child', $(childElm).html()).attr('href')
+                    const afterPic = $('a:nth-child(2)', $(childElm).html()).attr('href')
+                    picsBoth.push({
+                        'before': `https://dashboard.tracking.punjab.gov.pk/${beforePic}`,
+                        'after': `https://dashboard.tracking.punjab.gov.pk/${afterPic}`
+                    })
+                    tdValue = picsBoth
+                }
+
+                if (tdValue) {
+                    activity[keys[keyIdx]] = tdValue
+
+                    keyIdx++
+                }
             })
-        }
-        );
-        await writeFileSync("activities.json", JSON.stringify(data))
+            console.log(activity)
+        })
         await page.screenshot({ path: 'response.png', fullPage: true })
         await browser.close()
 

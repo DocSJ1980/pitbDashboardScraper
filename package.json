@@ -9,11 +9,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.27.2",
     "cheerio": "^1.0.0-rc.12",
     "puppeteer": "^17.1.0",
     "puppeteer-extra": "^3.3.4",
-    "puppeteer-extra-plugin-recaptcha": "^3.6.6",
-    "puppeteer-table-parser": "^1.7.0"
+    "puppeteer-extra-plugin-recaptcha": "^3.6.6"
   }
 }

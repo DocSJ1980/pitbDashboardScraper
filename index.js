@@ -33,102 +33,104 @@ puppeteer.launch({
         await page.type("#user_username", "web.dept.dcorawalpindi.10029")
         await page.type("#user_password", "12344321")
         // That's it, a single line of code to solve reCAPTCHAs 🎉
-        await page.solveRecaptchas()
-        // await page.waitForTimeout(15000)
+        // await page.solveRecaptchas()
+        await page.waitForTimeout(1000)
         await Promise.all([
             page.waitForNavigation(),
             page.click(`#new_user button`)
         ])
         // Navigating to Activities page
+        // const datefrom = '2022-09-02T22:00'
+        // const dateto = '2022-09-02T23:59'
         await page.goto('https://dashboard.tracking.punjab.gov.pk/activities/simples/line_list')
         await page.type("#department", "DHA Rawalpindi")
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("0");
-        await page.keyboard.press("9");
-        await page.keyboard.press("0");
-        await page.keyboard.press("2");
-        await page.keyboard.press("2");
-        await page.keyboard.press("0");
-        await page.keyboard.press("2");
-        await page.keyboard.press("2");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("1");
-        await page.keyboard.press("0");
-        await page.keyboard.press("0");
-        await page.keyboard.press("0");
-        await page.keyboard.press("p");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("0");
-        await page.keyboard.press("9");
-        await page.keyboard.press("0");
-        await page.keyboard.press("2");
-        await page.keyboard.press("2");
-        await page.keyboard.press("0");
-        await page.keyboard.press("2");
-        await page.keyboard.press("2");
-        await page.keyboard.press("Tab");
-        await page.keyboard.press("1");
-        await page.keyboard.press("1");
-        await page.keyboard.press("5");
-        await page.keyboard.press("9");
-        await page.keyboard.press("p");
+
+        await page.$eval('#datefrom', el => el.value = '2022-09-02T22:00')
+        await page.$eval('#dateto', el => el.value = '2022-09-02T23:59')
 
         await Promise.all([
             page.waitForNavigation(),
             page.click('body > div.app-admin-wrap.layout-horizontal-bar.clearfix > div > div.row.p-custom > div:nth-child(5) > button'),
         ])
-        // Loading HTML data in cheerio and selecting table
+
+        //Calculating pages
         const pageData = await page.evaluate(() => {
             return { html: document.documentElement.innerHTML }
         })
-
+        const activityArr = []
         const $ = cheerio.load(pageData.html)
-        const table = $('#p_table')
-        const rowSelector = "#p_table > tbody > tr"
-
-        const keys = ['sr', 'id', 'district', 'town', 'uc', 'tag', 'larva', 'dengueLarva', 'lat', 'long', 'pics', 'timeDiff', 'user', 'activityTime', 'bogus']
-
+        const pagination = $('.apple_pagination:nth-child(2)').text()
+        const pages = Math.ceil(pagination.substring(15) / 20)
+        console.log(pages)
         // Iterating through columns
-        $(rowSelector).each((parentIdx, parentElm) => {
-            let keyIdx = 0
-            const activity = {}
-            const picsBoth = []
-            $(parentElm).children().each((childIdx, childElm) => {
-                let tdValue = $(childElm).text()
+        for (let i = 1; i < pages + 1; i++) {
+            await page.waitForTimeout(1000)
 
-                if (keyIdx === 10) {
-                    const beforePic = $('a:first-child', $(childElm).html()).attr('href')
-                    const afterPic = $('a:nth-child(2)', $(childElm).html()).attr('href')
-                    picsBoth.push({
-                        'before': `https://dashboard.tracking.punjab.gov.pk${beforePic}`,
-                        'after': `https://dashboard.tracking.punjab.gov.pk${afterPic}`
-                    })
-                    tdValue = picsBoth
-                }
+            const activityUrl = `https://dashboard.tracking.punjab.gov.pk/activities/simples/line_list?act_tag=&datefrom=$2022-09-02T22:00&dateto=2022-09-02T23:59&department=129&district_id=&larva_type=&page=${i}&tehsil_id=&uc=`
+            await page.goto(activityUrl)
 
-                if (keyIdx === 14) {
-                    const bogus = $('button', $(childElm).html()).attr('onclick')
-                    if (bogus === undefined) {
-                        tdValue = "Bogus Activity"
-                    } else {
-                        tdValue = `https://dashboard.tracking.punjab.gov.pk${bogus.substr(17)}`
-                    }
-                }
-
-                if (tdValue) {
-                    activity[keys[keyIdx]] = tdValue
-
-                    keyIdx++
-                }
+            let activityData = await page.evaluate(() => {
+                return { html: document.documentElement.innerHTML }
             })
-            console.log(activity)
-        })
+            await page.waitForTimeout(1000)
+            await scrape(activityData)
+            console.log(`Page ${i} scraped successfully.`)
+
+            // await page.click('.next_page')
+            // console.log(activityArr)
+
+        }
         await page.screenshot({ path: 'response.png', fullPage: true })
         await browser.close()
 
 
 
     })
+
+const scrape = async (activityData) => {
+    let $ = cheerio.load(activityData.html)
+    let table = $('#p_table')
+    let rowSelector = "#p_table > tbody > tr"
+
+    const keys = ['sr', 'id', 'district', 'town', 'uc', 'tag', 'larva', 'dengueLarva', 'lat', 'long', 'pics', 'timeDiff', 'user', 'activityTime', 'bogus']
+
+
+    $(rowSelector).each((parentIdx, parentElm) => {
+        let keyIdx = 0
+        const activity = {}
+        let picsBoth = []
+        $(parentElm).children().each((childIdx, childElm) => {
+            let td = $(childElm)
+            let tdValue = $(childElm).text()
+            $(td).find('a').each((i, part) => {
+                const $part = $(part)
+                picsBoth.push($part.attr('href'))
+            })
+
+            if (keyIdx === 10) {
+                // picsBoth.beforePic = $('a:first-child', $(childElm).html()).attr('href')
+                // picsBoth.afterPic = $('a:nth-child(2)', $(childElm).html()).attr('href')
+                tdValue = picsBoth
+            }
+
+            if (keyIdx === 14) {
+                const bogus = $('button', $(childElm).html()).attr('onclick')
+                if (bogus === undefined) {
+                    tdValue = "Bogus Activity"
+                } else {
+                    tdValue = `https://dashboard.tracking.punjab.gov.pk${bogus.substring(17)}`
+                }
+            }
+
+            if (tdValue) {
+                activity[keys[keyIdx]] = tdValue
+
+
+                keyIdx++
+            }
+        })
+        console.log(activity)
+    })
+    // return scrape() // run the loop again
+}
+

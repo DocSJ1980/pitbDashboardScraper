@@ -1,6 +1,5 @@
-const { default: axios } = require('axios')
 const cheerio = require('cheerio')
-const dateMod = require('./dateMod')
+const uploadActivity = require('./uploadActivity')
 
 const scrape = async (activityData) => {
     let $ = cheerio.load(activityData.html)
@@ -39,43 +38,11 @@ const scrape = async (activityData) => {
                 keyIdx++
             }
         })
-        try {
-            await uploadActivity(activity)
-        } catch (error) {
-            console.log(error)
-        }
+        await uploadActivity(activity)
         console.log(`Activity number ${parentIdx + 1} scrapped`)
     })
 }
 
-const uploadActivity = async (activity) => {
-    // "on 09/02/2022 at 10:01PM"
-    const aDate = dateMod(activity)
-    const dateSubmitted = new Date(aDate)
-    // console.log(dateSubmitted)
-    // console.log(aDate)
-    axios({
-        method: 'post',
-        url: 'http://scraper.sjcloud.ga:5232/simples/new',
-        data: {
-            pitbid: activity.pitbid,
-            district: activity.district,
-            town: activity.town,
-            uc: activity.uc,
-            department: activity.department,
-            tag: activity.tag,
-            larva: activity.larva,
-            dengueLarva: activity.dengueLarva,
-            lat: activity.lat,
-            long: activity.long,
-            beforePic: `https://dashboard.tracking.punjab.gov.pk${activity.pics[0]}`,
-            afterPic: `https://dashboard.tracking.punjab.gov.pk${activity.pics[1]}`,
-            timeDiff: activity.timeDiff,
-            userName: activity.userName,
-            dateSubmitted: dateSubmitted,
-            bogus: activity.bogus
-        }
-    })
-}
+
 
 module.exports = scrape

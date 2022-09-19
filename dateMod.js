@@ -1,3 +1,5 @@
+const moment = require("moment/moment");
+
 const dateMod = (activity) => {
     // "on 09/02/2022 at 10:01PM"
     // "    1  2   3      7  5"
@@ -13,10 +15,10 @@ const dateMod = (activity) => {
     if (date6 === "PM") {
         date4 = date4 + 12
     }
-    return new Date(date3, date1, date2, date4, date5)
-        .toLocaleString('en-US', {
-            timeZone: 'Asia/Karachi'
-        });
+    const date7 = new Date(date3, date1, date2, date4, date5)
+
+    return moment(date7).format();
+
 }
 
 module.exports = dateMod

@@ -1,7 +1,7 @@
 const cheerio = require('cheerio')
 const uploadActivity = require('./uploadActivity')
 
-const scrape = async (activityData) => {
+const scrape = async (page, activityData) => {
     let $ = cheerio.load(activityData.html)
     let rowSelector = "#p_table > tbody > tr"
 
@@ -11,7 +11,7 @@ const scrape = async (activityData) => {
     $(rowSelector).each(async function (parentIdx, parentElm) {
         const activity = {}
         let keyIdx = 0
-        $(parentElm).children().each((childIdx, childElm) => {
+        $(parentElm).children().each(async (childIdx, childElm) => {
             let picsBoth = []
             let td = $(childElm)
             let tdValue = $(childElm).text()
@@ -38,6 +38,7 @@ const scrape = async (activityData) => {
                 keyIdx++
             }
         })
+        await page.waitForTimeout(1000)
         await uploadActivity(activity)
         console.log(`Activity number ${parentIdx + 1} scrapped`)
     })

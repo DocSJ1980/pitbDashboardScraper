@@ -3,7 +3,7 @@ const dateMod = require("./dateMod")
 
 const uploadActivity = async (activity) => {
     const dateSubmitted = await dateMod(activity)
-    console.log(dateSubmitted)
+    // console.log(dateSubmitted)
     await axios({
         method: 'post',
         url: 'http://scraper.sjcloud.ga:5232/simples/new',

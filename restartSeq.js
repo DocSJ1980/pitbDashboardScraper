@@ -6,6 +6,8 @@ const restartSeq = async (page) => {
     await page.waitForTimeout(1000)
     console.log("Starting next loop in 8 seconds")
     await page.waitForTimeout(1000)
+    console.log("Starting next loop in 7 seconds")
+    await page.waitForTimeout(1000)
     console.log("Starting next loop in 6 seconds")
     await page.waitForTimeout(1000)
     console.log("Starting next loop in 5 seconds")

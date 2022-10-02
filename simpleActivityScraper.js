@@ -11,36 +11,43 @@ const scrape = async (page, activityData) => {
     $(rowSelector).each(async function (parentIdx, parentElm) {
         const activity = {}
         let keyIdx = 0
-        $(parentElm).children().each(async (childIdx, childElm) => {
-            let picsBoth = []
-            let td = $(childElm)
-            let tdValue = $(childElm).text()
-            $(td).find('a').each((i, part) => {
-                const $part = $(part)
-                picsBoth.push($part.attr('href'))
-            })
+        await new Promise(resolve => {
+            $(parentElm).children().each(async (childIdx, childElm) => {
+                let picsBoth = []
+                let td = $(childElm)
+                let tdValue = $(childElm).text()
+                $(td).find('a').each((i, part) => {
+                    const $part = $(part)
+                    picsBoth.push($part.attr('href'))
+                })
 
-            if (keyIdx === 10) {
-                tdValue = picsBoth
-            }
-
-            if (keyIdx === 14) {
-                const bogus = $('button', $(childElm).html()).attr('onclick')
-                if (bogus === undefined) {
-                    tdValue = "Bogus Activity"
-                } else {
-                    tdValue = `https://dashboard.tracking.punjab.gov.pk${bogus.substring(17)}`
+                if (keyIdx === 10) {
+                    tdValue = picsBoth
                 }
-            }
 
-            if (childIdx) {
-                activity[keys[childIdx]] = tdValue
-                keyIdx++
-            }
+                if (keyIdx === 14) {
+                    const bogus = $('button', $(childElm).html()).attr('onclick')
+                    if (bogus === undefined) {
+                        tdValue = "Bogus Activity"
+                    } else {
+                        tdValue = `https://dashboard.tracking.punjab.gov.pk${bogus.substring(17)}`
+                    }
+                }
+
+                if (childIdx) {
+                    activity[keys[childIdx]] = tdValue
+                    keyIdx++
+                }
+            })
+            resolve()
         })
         await page.waitForTimeout(1000)
-        await uploadActivity(activity)
-        console.log(`Activity number ${parentIdx + 1} scrapped`)
+        await new Promise(resolve => {
+            uploadActivity(activity)
+            console.log(`Activity number ${parentIdx + 1} scrapped`)
+            resolve()
+        })
+        await page.waitForTimeout(10000)
     })
 }
 

@@ -11,7 +11,7 @@ const dateMod = (activity) => {
     let date4 = parseInt(activity.date.slice(17, 19))
     const date5 = parseInt(activity.date.slice(20, 22))
     const date6 = activity.date.slice(22, 24)
-    if (date6 === "PM") {
+    if (date6 === "PM" && date4 != 12) {
         date4 = date4 + 12
     }
     if (date6 === "AM" && date4 === 12) {

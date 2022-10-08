@@ -1,9 +1,13 @@
 const cheerio = require('cheerio')
 const uploadActivity = require('./uploadActivity')
+const dateMod = require("./dateMod")
+const batchUploadActivity = require('./batchUploadActivity')
+
 
 const scrape = async (page, activityData) => {
     let $ = cheerio.load(activityData.html)
     let rowSelector = "#p_table > tbody > tr"
+    const allActivities = []
 
     const keys = ['sr', 'pitbid', 'district', 'town', 'uc', 'department', 'tag', 'larva', 'dengueLarva', 'lat', 'long', 'pics', 'timeDiff', 'userName', 'date', 'bogus']
 
@@ -18,11 +22,15 @@ const scrape = async (page, activityData) => {
                 let tdValue = $(childElm).text()
                 $(td).find('a').each((i, part) => {
                     const $part = $(part)
-                    picsBoth.push($part.attr('href'))
+                    picsBoth.push(`https://dashboard.tracking.punjab.gov.pk${$part.attr('href')}`)
                 })
 
                 if (keyIdx === 10) {
                     tdValue = picsBoth
+                }
+
+                if (keyIdx === 13) {
+                    tdValue = dateMod(tdValue)
                 }
 
                 if (keyIdx === 14) {
@@ -39,16 +47,18 @@ const scrape = async (page, activityData) => {
                     keyIdx++
                 }
             })
-            resolve()
-        })
-        await page.waitForTimeout(1000)
-        await new Promise(resolve => {
-            uploadActivity(activity)
+            const coordinates = [activity.long, activity.lat]
+            const location = { coordinates }
+            activity.location = location
+            delete activity.long
+            delete activity.lat
+            allActivities.push(activity)
             console.log(`Activity number ${parentIdx + 1} scrapped`)
             resolve()
         })
-        await page.waitForTimeout(10000)
     })
+    // console.log(allActivities)
+    batchUploadActivity(allActivities)
 }
 
 

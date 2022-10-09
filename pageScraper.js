@@ -14,6 +14,7 @@ const moment = require("moment/moment")
 // Please note: You need to add funds to your 2captcha account for this to work
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
 const restartSeq = require('./restartSeq');
+const isoDate = require('./lastActivityDate');
 puppeteer.use(
     RecaptchaPlugin({
         provider: {
@@ -49,10 +50,7 @@ const pageScraper = () => puppeteer.launch({
         ])
         console.log("Step 2 successful")
 
-        const lastActivityDate = await axios.get('http://scraper.sjcloud.ga:5232/simples/fetchall')
-        const isoDate = lastActivityDate.data
-        console.log(isoDate)
-        let datefrom = moment(isoDate).add(1, 'm').format("YYYY-MM-DDTHH:mm")
+        let datefrom = moment(await isoDate()).add(1, 'm').format("YYYY-MM-DDTHH:mm")
         console.log(datefrom)
         console.log("Received last activity date & time from target database")
         let dateto = moment(datefrom).add(2, 'm').format("YYYY-MM-DDTHH:mm")

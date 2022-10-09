@@ -1577,3 +1577,19 @@
 {"level":"error","message":"connect ECONNREFUSED 150.136.140.84:5231","timestamp":"2022-10-08T20:25:01.959Z"}
 {"level":"error","message":"connect ECONNREFUSED 150.136.140.84:5231","timestamp":"2022-10-08T20:25:08.102Z"}
 {"level":"error","message":"connect ECONNREFUSED 150.136.140.84:5231","timestamp":"2022-10-08T20:25:12.277Z"}
+{"level":"error","message":"Request failed with status code 404","timestamp":"2022-10-08T20:59:17.482Z"}
+{"level":"error","message":"Request failed with status code 404","timestamp":"2022-10-08T20:59:21.292Z"}
+{"level":"error","message":"Request failed with status code 404","timestamp":"2022-10-08T21:01:34.365Z"}
+{"level":"error","message":"Request failed with status code 404","timestamp":"2022-10-08T21:01:38.147Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:13:40.580Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:13:44.321Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:13:47.994Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:13:51.394Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:13:57.307Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:01.001Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:04.592Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:08.408Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:12.093Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:16.790Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:45.908Z"}
+{"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-08T21:14:49.771Z"}

@@ -9,7 +9,7 @@ const scrape = async (page, activityData) => {
     let rowSelector = "#p_table > tbody > tr"
     const allActivities = []
 
-    const keys = ['sr', 'pitbid', 'district', 'town', 'uc', 'department', 'tag', 'larva', 'dengueLarva', 'lat', 'long', 'pics', 'timeDiff', 'userName', 'date', 'bogus']
+    const keys = ['sr', 'pitbid', 'district', 'town', 'uc', 'department', 'tag', 'larva', 'dengueLarva', 'lat', 'long', 'pics', 'timeDiff', 'userName', 'dateSubmitted', 'bogus']
 
 
     $(rowSelector).each(async function (parentIdx, parentElm) {

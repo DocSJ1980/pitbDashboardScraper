@@ -49,7 +49,7 @@ const pageScraper = () => puppeteer.launch({
         ])
         console.log("Step 2 successful")
 
-        const lastActivityDate = await axios.get('http://scraper.sjcloud.ga:5232/simples/fetchasimpleactivity')
+        const lastActivityDate = await axios.get('http://scraper.sjcloud.ga:5232/simples/fetchall')
         const isoDate = lastActivityDate.data
         console.log(isoDate)
         let datefrom = moment(isoDate).add(1, 'm').format("YYYY-MM-DDTHH:mm")

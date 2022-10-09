@@ -5,7 +5,7 @@ const batchUploadActivity = async (allActivities) => {
     try {
         const res = await axios({
             method: 'post',
-            url: 'http://backend.sjcloud.ga:5231/simples/batch',
+            url: 'http://scraper.sjcloud.ga:5232/simples/batch',
             data: {
                 allActivities: allActivities
             }

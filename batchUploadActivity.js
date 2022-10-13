@@ -10,10 +10,10 @@ const batchUploadActivity = async (allActivities) => {
                 allActivities: allActivities
             }
         })
-        console.log(res.data)
+        console.log(await res.data)
         logger.activityLogger.log('info', res.data)
     } catch (error) {
-        console.log(error.message)
+        console.log(await error.message)
         logger.activityLogger.log('error', error.message)
     }
 }

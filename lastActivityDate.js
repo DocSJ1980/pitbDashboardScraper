@@ -3,7 +3,7 @@ const { default: axios } = require("axios")
 const isoDate = async () => {
     const rerun = "rerun"
     try {
-        lastActivityDate = await axios.get('http://scraper.sjcloud.ga:5232/simples/fetchall')
+        lastActivityDate = await axios.get('http://backend.sjcloud.ga:5231/simples/fetchlastsimples')
         return lastActivityDate.data
     }
     catch (error) {

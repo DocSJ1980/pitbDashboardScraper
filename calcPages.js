@@ -7,7 +7,7 @@ const iteratePages = require('./interatePages');
 const calcPages = async (page) => {
     const dbDate = await isoDate()
     if (dbDate != "rerun") {
-        let datefrom = moment(dbDate).add(1, 'm').format("YYYY-MM-DDTHH:mm")
+        let datefrom = moment(dbDate).format("YYYY-MM-DDTHH:mm")
         console.log(datefrom)
         console.log("Received last activity date & time from target database")
         let dateto = moment(datefrom).add(2, 'm').format("YYYY-MM-DDTHH:mm")

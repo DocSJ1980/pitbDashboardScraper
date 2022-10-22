@@ -23,6 +23,7 @@ const scrape = async (page, activityData) => {
                 $(td).find('a').each((i, part) => {
                     const $part = $(part)
                     picsBoth.push(`https://dashboard.tracking.punjab.gov.pk${$part.attr('href')}`)
+                    // console.log(picsBoth)
                 })
 
                 if (keyIdx === 10) {
@@ -49,9 +50,14 @@ const scrape = async (page, activityData) => {
             })
             const coordinates = [activity.long, activity.lat]
             const location = { coordinates }
+            const beforePic = activity.pics[0]
+            const afterPic = activity.pics[1]
             activity.location = location
+            activity.beforePic = beforePic
+            activity.afterPic = afterPic
             delete activity.long
             delete activity.lat
+            delete activity.pics
             allActivities.push(activity)
             console.log(`Activity number ${parentIdx + 1} scrapped`)
             resolve()

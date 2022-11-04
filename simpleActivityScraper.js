@@ -59,7 +59,7 @@ const scrape = async (page, activityData) => {
             delete activity.lat
             delete activity.pics
             allActivities.push(activity)
-            console.log(`Activity number ${parentIdx + 1} scrapped`)
+            // console.log(`Activity number ${parentIdx + 1} scrapped`)
             resolve()
         })
     })

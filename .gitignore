@@ -1,2 +1,5 @@
 node_modules/
 myUserDataDir/
+docker-compose.yaml
+activity.log
+activity-error.log

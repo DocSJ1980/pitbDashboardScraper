@@ -2,7 +2,7 @@
 // it augments the installed puppeteer with plugin functionality
 const puppeteer = require('puppeteer-extra')
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha');
-const restartSeq = require('./restartSeq');
+// const restartSeq = require('./restartSeq');
 const calcPages = require('./calcPages');
 
 // add recaptcha plugin and provide it your 2captcha token (= their apiKey)
@@ -12,25 +12,28 @@ puppeteer.use(
     RecaptchaPlugin({
         provider: {
             id: '2captcha',
-            token: '08306da0a50bf487eb36b5c746e0269c' // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
+            token: process.env.API_KEY // REPLACE THIS WITH YOUR OWN 2CAPTCHA API KEY ⚡
         },
         visualFeedback: true // colorize reCAPTCHAs (violet = detected, green = solved)
     })
 )
 // puppeteer usage as normal
 // Launch Browser
+let sessionCount = 1
 const pageScraper = () => puppeteer.launch({
     headless: true,
     defaultViewport: null,
-    executablePath: 'C:/Program Files/Google/Chrome/Application/chrome.exe'
+    executablePath: '/usr/bin/chromium-browser',
+    args: [
+        "--no-sandbox",
+        "--disable-gpu",
+    ]
 })
     // Scraping Logic
     .then(async browser => {
         //Login
         const page = await browser.newPage()
         await page.setDefaultNavigationTimeout(0)
-        await page.goto('https://google.com')
-        console.log("Step 1 successful")
         await page.goto('https://dashboard.tracking.punjab.gov.pk', { waitUntil: 'load', timeout: 0 })
         await page.type("#user_username", "web.dept.dcorawalpindi.10029")
         await page.type("#user_password", "12344321")
@@ -41,12 +44,11 @@ const pageScraper = () => puppeteer.launch({
             page.waitForNavigation(),
             page.click(`#new_user button`)
         ])
-        console.log("Step 2 successful")
-
-        console.log("Checking for number of available activities")
-        await calcPages(page)
+        console.log("Login successful")
+        await calcPages(page, sessionCount)
         await browser.close()
-        await restartSeq(page)
+        // await restartSeq(page)
+        sessionCount++
         await pageScraper()
     })
 

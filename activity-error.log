@@ -25,3 +25,7 @@
 {"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-22T14:15:38.792Z"}
 {"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-22T14:15:42.319Z"}
 {"level":"error","message":"Request failed with status code 400","timestamp":"2022-10-22T14:15:45.882Z"}
+{"level":"error","message":"getaddrinfo ENOTFOUND scraper.sjcloud.ga","timestamp":"2022-10-28T13:47:58.419Z"}
+{"level":"error","message":"getaddrinfo ENOTFOUND scraper.sjcloud.ga","timestamp":"2022-10-29T06:04:56.164Z"}
+{"level":"error","message":"getaddrinfo ENOTFOUND scraper.sjcloud.ga","timestamp":"2022-11-01T18:09:26.879Z"}
+{"level":"error","message":"connect ECONNREFUSED 150.136.140.84:5232","timestamp":"2022-11-02T13:25:12.951Z"}
